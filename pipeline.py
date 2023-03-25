@@ -5,7 +5,7 @@ from utils import LabelSmoothingLoss
 from utils import get_optimizer
 from utils import WarmUpLR, get_scheduler
 from utils import train, evaluate
-from utils import get_train_valid_loader, get_test_loader
+from utils import get_train_val_dataloader_t1, get_test_dataloader_t1
 from utils import seed_everything, count_params, get_model, calc_step, log
 
 import torch
@@ -46,19 +46,17 @@ def training_pipeline(config):
 
     # data
 
-    trainloader, valloader = get_train_valid_loader(
-        data_dir=config["data_dir"],
-        batch_size=config["hparams"]["batch_size"],
-        augment=config["hparams"]["augment"],
-        num_workers=config["exp"]["n_workers"],
-        pin_memory=config["exp"]["pin_memory"],
-    )
-    testloader = get_test_loader(
-        data_dir=config["data_dir"],
-        batch_size=config["hparams"]["batch_size"],
-        num_workers=config["exp"]["n_workers"],
-        pin_memory=config["exp"]["pin_memory"],
-    )
+    if config['exp']['task'] == 't1':
+
+
+        trainloader, valloader = get_train_val_dataloader_t1(
+            root_dir=config['exp']['data_dir'],
+            batch_size=config['hparams']['batch_size']
+        )
+        testloader = get_test_dataloader_t1(
+            root_dir=config['exp']['data_dir'],
+            batch_size=config['hparams']['batch_size']
+        )
 
     # model
     model = get_model(config["hparams"]["model"])
@@ -68,7 +66,7 @@ def training_pipeline(config):
     # loss
     if config["hparams"]["l_smooth"]:
         criterion = LabelSmoothingLoss(
-            num_classes=config["hparams"]["model"]["num_class"],
+            num_classes=config["hparams"]["num_classes"],
             smoothing=config["hparams"]["l_smooth"],
         )
     else:

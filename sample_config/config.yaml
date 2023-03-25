@@ -1,0 +1,51 @@
+
+
+
+exp:
+    data_dir: /media/saitomar/Work/Projects/DeepLense_Test/task_1_dataset/dataset
+    wandb: False
+    wandb_api_key: 
+    proj_name: DeepLense
+    exp_dir: ./runs
+    exp_name: Task1-ConvNext-0.1
+    device: auto
+    log_freq: 20  # steps
+    log_to_file: False
+    log_to_stdout: True
+    val_freq: 1   # epochs
+    n_workers: 1
+    pin_memory: True
+    cache: 2
+    task: t1
+entity: saitomar
+
+hparams:
+    restore_ckpt:
+    seed: 0
+    batch_size: 16
+    start_epoch: 0
+    n_epochs: 2
+    l_smooth: 0.1
+    device: auto
+    num_classes: 3
+
+    
+    model:
+        type : ConvNext
+        ConvNext:
+            in_channels : 1
+            stem_features : 64
+            depths : [3, 4, 6]
+            widths : [256, 512, 1024]
+            num_classes : 3
+    optimizer:
+        opt_type: adamw
+        opt_kwargs:
+          lr: 0.005
+          
+    
+    scheduler:
+        n_warmup: 1
+        max_epochs: 2
+        scheduler_type: cosine_annealing
+
