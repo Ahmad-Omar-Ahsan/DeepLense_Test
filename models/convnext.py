@@ -137,6 +137,7 @@ class ConvNextEncoder(nn.Module):
         )
 
     def forward(self, x):
+        x = x.float()
         x = self.stem(x)
         for stage in self.stages:
             x = stage(x)
