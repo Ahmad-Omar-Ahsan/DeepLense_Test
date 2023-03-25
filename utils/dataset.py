@@ -21,7 +21,7 @@ def get_train_val_dataloader_t1(root_dir : str, batch_size : int = 16):
     train_val_dataset = get_dataset_t1(train_val_dir,loader=sample_loader)
     num_data = len(train_val_dataset)
     indices = list(range(num_data))
-    split = int(num_data * 0.8) # 80% for training, 20% for validation
+    split = int(num_data * 0.95) # 95% for training, 5% for validation
     train_indices, val_indices = indices[:split], indices[split:]
 
     # Define sampler for train and validation sets
