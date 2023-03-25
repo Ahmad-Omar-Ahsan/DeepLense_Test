@@ -1,3 +1,4 @@
 task_1_dataset
 *.txt
 __pycache__
+.vscode
