@@ -1,2 +1,2 @@
 # DeepLense_Test
-Code for Dense Lense test tasks
+This repository contains the code for DeepLense project tests for GSoC 2023
