@@ -18,6 +18,11 @@ def get_val_dataset_t1(root_dir : str, loader, transform: List):
 def sample_loader(f :str):
     return np.load(f)
 
+"""
+Create train val from train folder
+treat val dir as test dir
+"""
+
 if __name__=="__main__":
     transform =transforms.Compose([   
         transforms.ToTensor()
