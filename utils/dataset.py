@@ -9,16 +9,20 @@ from sklearn.model_selection import train_test_split
 def sample_loader(f :str):
     return np.load(f,).astype('float32').transpose(1,2,0)
 
-def get_dataset_t1(root_dir : str, loader = sample_loader, transform: List = None):
+def get_dataset_t1(root_dir : str, loader = sample_loader):
+    transform = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.CenterCrop(100)
+    ])
     dataset = DatasetFolder(root=root_dir,extensions=".npy", loader=loader,transform=transform)
     return dataset
 
 
 
-def get_train_val_dataloader_t1(root_dir : str, batch_size : int = 16, transform =None):
+def get_train_val_dataloader_t1(root_dir : str, batch_size : int = 16):
     train_val_dir = os.path.join(root_dir, 'train')
 
-    train_val_dataset = get_dataset_t1(train_val_dir,loader=sample_loader, transform=transform)
+    train_val_dataset = get_dataset_t1(train_val_dir,loader=sample_loader)
     print(train_val_dataset[0][0].shape)
     targets = train_val_dataset.targets
     train_idx, val_idx= train_test_split(
@@ -38,9 +42,9 @@ def get_train_val_dataloader_t1(root_dir : str, batch_size : int = 16, transform
     return train_loader, val_loader
 
 
-def get_test_dataloader_t1(root_dir : str, batch_size : int = 16,transform=None):
+def get_test_dataloader_t1(root_dir : str, batch_size : int = 16):
     test_dir = os.path.join(root_dir, 'val')
-    test_dataset = get_dataset_t1(test_dir, loader=sample_loader,transform=transform)
+    test_dataset = get_dataset_t1(test_dir, loader=sample_loader)
 
     test_loader = DataLoader(test_dataset, batch_size=batch_size)
 
@@ -53,13 +57,10 @@ if __name__=="__main__":
     root_dir = '/media/saitomar/Work/Projects/DeepLense_Test/task_1_dataset/dataset'
     # dataset = get_dataset_t1(root_dir=root_dir)
     # print(dataset.samples)
-    transform = transforms.Compose([
-        transforms.ToTensor(),
-        transforms.CenterCrop(100)
-    ])
+    
     # transform=None
-    train_dataloader, val_dataloader = get_train_val_dataloader_t1(root_dir,transform=transform)
-    test_dataloader = get_test_dataloader_t1(root_dir,transform=transform)
+    train_dataloader, val_dataloader = get_train_val_dataloader_t1(root_dir)
+    test_dataloader = get_test_dataloader_t1(root_dir)
     
     for i, (sample, label) in enumerate(train_dataloader):
         print(sample.shape, label)
