@@ -23,7 +23,6 @@ def get_train_val_dataloader_t1(root_dir : str, batch_size : int = 16):
     train_val_dir = os.path.join(root_dir, 'train')
 
     train_val_dataset = get_dataset_t1(train_val_dir,loader=sample_loader)
-    print(train_val_dataset[0][0].shape)
     targets = train_val_dataset.targets
     train_idx, val_idx= train_test_split(
         np.arange(len(targets)),

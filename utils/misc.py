@@ -84,7 +84,7 @@ def get_model(model_config: dict) -> nn.Module:
     """
     if model_config['type'] == 'ConvNext':
         return ConvNext(**model_config['ConvNext'])
-    elif model_config['type'] == 'ConvNext_bacbbone':
+    elif model_config['type'] == 'ConvNext_backbone':
         return ConvNext_backbone_model(**model_config['ConvNext_backbone'])
     
 
