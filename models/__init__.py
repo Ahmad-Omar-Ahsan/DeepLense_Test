@@ -1,1 +1,1 @@
-from .convnext import ConvNext
+from .convnext import ConvNext, ConvNext_backbone_model

@@ -6,7 +6,7 @@ import numpy as np
 import random
 import os
 import wandb
-from models import ConvNext
+from models import ConvNext, ConvNext_backbone_model
 
 
 def seed_everything(seed: str) -> None:
@@ -84,6 +84,8 @@ def get_model(model_config: dict) -> nn.Module:
     """
     if model_config['type'] == 'ConvNext':
         return ConvNext(**model_config['ConvNext'])
+    elif model_config['type'] == 'ConvNext_bacbbone':
+        return ConvNext_backbone_model(**model_config['ConvNext_backbone'])
     
 
 

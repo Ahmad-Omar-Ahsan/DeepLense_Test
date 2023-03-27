@@ -1,4 +1,5 @@
 import torch
+import timm
 
 from torch import nn
 from torch import Tensor
@@ -172,13 +173,39 @@ class ConvNext(nn.Sequential):
         self.head = ClassificationHead(widths[-1], num_classes)
 
 
+class ConvNext_backbone_model(nn.Module):
+    def __init__(self, in_channels: int, num_classes: int):
+        super().__init__()
+        self.model = timm.create_model('convnext_base', pretrained=True, in_chans=in_channels)
+        self.fc = nn.Sequential(
+                                nn.Linear(1024 * 3 * 3, 1024),
+                                nn.PReLU(),
+                                nn.BatchNorm1d(1024),
+                                nn.Dropout(p = 0.5),
+                                
+                                nn.Linear(1024, 512),
+                                nn.BatchNorm1d(512),
+                                nn.PReLU(),
+                                nn.Dropout(p = 0.5),
+        
+                                nn.Linear(512, 128),
+                                nn.PReLU(),
+                                nn.BatchNorm1d(128),
+                                nn.Dropout(p = 0.3),
+                                
+                                nn.Linear(128, num_classes)
+                                )
+
+    def forward(self,x):
+        x = self.model.forward_features(x)
+        
+        B, C, H, W = x.shape
+        x = x.reshape((B, C*H*W))
+        x = self.fc(x)
+        return x
+
 if __name__ == "__main__":
-    image = torch.rand(1, 2, 224, 224)
-    classifier = ConvNext(
-        in_channels=2,
-        stem_features=64,
-        depths=[3, 4, 6, 4],
-        widths=[256, 512, 1024, 2048],
-        num_classes=10
-    )
+    image = torch.rand(2, 1, 100, 100)
+    classifier = ConvNext_backbone_model(in_channels=1,num_classes=3)
+
     print(classifier(image).shape)
