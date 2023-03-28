@@ -5,7 +5,7 @@ from utils import LabelSmoothingLoss
 from utils import get_optimizer
 from utils import WarmUpLR, get_scheduler
 from utils import train, evaluate
-from utils import get_train_val_dataloader_t1, get_test_dataloader_t1
+from utils import get_train_val_dataloader_t1, get_test_dataloader_t1, get_dataset_t2
 from utils import seed_everything, count_params, get_model, calc_step, log
 
 import torch
@@ -46,16 +46,20 @@ def training_pipeline(config):
 
     # data
 
-    if config['exp']['task'] == 't1':
-
+    if config["exp"]["task"] == "t1":
 
         trainloader, valloader = get_train_val_dataloader_t1(
-            root_dir=config['exp']['data_dir'],
-            batch_size=config['hparams']['batch_size']
+            root_dir=config["exp"]["data_dir"],
+            batch_size=config["hparams"]["batch_size"],
         )
         testloader = get_test_dataloader_t1(
-            root_dir=config['exp']['data_dir'],
-            batch_size=config['hparams']['batch_size']
+            root_dir=config["exp"]["data_dir"],
+            batch_size=config["hparams"]["batch_size"],
+        )
+    elif config["exp"]["task"] == "t2":
+        train_dataloader, val_dataloader, test_dataloader = get_dataset_t2(
+            dataset_dir=config["exp"]["data_dir"],
+            batch_size=config["hparams"]["batch_size"],
         )
 
     # model
