@@ -57,7 +57,7 @@ def training_pipeline(config):
             batch_size=config["hparams"]["batch_size"],
         )
     elif config["exp"]["task"] == "t2":
-        train_dataloader, val_dataloader, test_dataloader = get_dataset_t2(
+        trainloader, valloader, testloader = get_dataset_t2(
             dataset_dir=config["exp"]["data_dir"],
             batch_size=config["hparams"]["batch_size"],
         )

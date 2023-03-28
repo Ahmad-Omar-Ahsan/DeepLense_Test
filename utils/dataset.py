@@ -39,15 +39,15 @@ def get_train_val_dataloader_t1(root_dir: str, batch_size: int = 16):
     )
 
     # Define sampler for train and validation sets
-    train_sampler = SubsetRandomSampler(train_idx)
-    val_sampler = SubsetRandomSampler(val_idx)
+    train_ds = Subset(train_val_dataset, indices=train_idx)
+    val_ds = Subset(train_val_dataset, indices=val_idx)
 
     # Define data loaders
     train_loader = DataLoader(
-        train_val_dataset, batch_size=batch_size, sampler=train_sampler
+        train_ds, batch_size=batch_size, shuffle=True
     )
     val_loader = DataLoader(
-        train_val_dataset, batch_size=batch_size, sampler=val_sampler
+        val_ds, batch_size=batch_size, shuffle=True
     )
 
     return train_loader, val_loader
