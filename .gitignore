@@ -1,5 +1,6 @@
 task_1_dataset
 task_2_dataset
+task_5_dataset
 *.txt
 __pycache__
 .vscode

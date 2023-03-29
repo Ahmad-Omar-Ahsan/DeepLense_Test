@@ -1,6 +1,6 @@
 from torchvision import transforms
 import os
-from torch.utils.data import DataLoader, SubsetRandomSampler, Dataset, Subset
+from torch.utils.data import DataLoader, Dataset, Subset
 from torchvision.datasets import DatasetFolder
 from typing import List
 import numpy as np
@@ -21,7 +21,7 @@ def sample_loader(f: str):
     )
 
 
-def get_dataset_t1(root_dir: str, loader=sample_loader):
+def prepare_dataset_t1(root_dir: str, loader=sample_loader):
     transform = transforms.Compose([transforms.ToTensor(), transforms.CenterCrop(100)])
     dataset = DatasetFolder(
         root=root_dir, extensions=".npy", loader=loader, transform=transform
@@ -29,10 +29,10 @@ def get_dataset_t1(root_dir: str, loader=sample_loader):
     return dataset
 
 
-def get_train_val_dataloader_t1(root_dir: str, batch_size: int = 16):
+def get_train_val_dataloader_t1(root_dir: str, batch_size: int = 16, shuffle=True):
     train_val_dir = os.path.join(root_dir, "train")
 
-    train_val_dataset = get_dataset_t1(train_val_dir, loader=sample_loader)
+    train_val_dataset = prepare_dataset_t1(train_val_dir, loader=sample_loader)
     targets = train_val_dataset.targets
     train_idx, val_idx = train_test_split(
         np.arange(len(targets)), test_size=0.05, shuffle=True, stratify=targets
@@ -44,20 +44,20 @@ def get_train_val_dataloader_t1(root_dir: str, batch_size: int = 16):
 
     # Define data loaders
     train_loader = DataLoader(
-        train_ds, batch_size=batch_size, shuffle=True
+        train_ds, batch_size=batch_size, shuffle=False
     )
     val_loader = DataLoader(
-        val_ds, batch_size=batch_size, shuffle=True
+        val_ds, batch_size=batch_size, shuffle=False
     )
 
     return train_loader, val_loader
 
 
-def get_test_dataloader_t1(root_dir: str, batch_size: int = 16):
+def get_test_dataloader_t1(root_dir: str, batch_size: int = 16, shuffle=False):
     test_dir = os.path.join(root_dir, "val")
-    test_dataset = get_dataset_t1(test_dir, loader=sample_loader)
+    test_dataset = prepare_dataset_t1(test_dir, loader=sample_loader)
 
-    test_loader = DataLoader(test_dataset, batch_size=batch_size)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=shuffle)
 
     return test_loader
 

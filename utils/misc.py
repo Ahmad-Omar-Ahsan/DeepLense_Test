@@ -128,3 +128,22 @@ def save_model(
     if log_file is not None:
         with open(log_file, "a+") as f:
             f.write(log_message + "\n")
+
+
+
+def generate_model_outputs(model : nn.Module, test_loader, num_classes: 3):
+    model.eval()
+    true_labels = []
+    class_probs = []
+    for i in range(num_classes):
+        class_probs.append([])
+
+    with torch.no_grad():
+        for i, (sample, labels) in enumerate(test_loader):
+            batch_outputs = model(sample)
+            batch_probs = torch.softmax(batch_outputs, dim=1)
+            true_labels.extend(labels.numpy())
+            for i in range(num_classes):
+                class_probs[i].extend(batch_probs[:,i].numpy())
+
+    return true_labels, class_probs
