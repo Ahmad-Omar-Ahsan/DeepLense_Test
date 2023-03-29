@@ -1,7 +1,7 @@
 from torchvision import transforms
 import os
 from torch.utils.data import DataLoader, Dataset, Subset
-from torchvision.datasets import DatasetFolder
+from torchvision.datasets import DatasetFolder,ImageFolder
 from typing import List
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -123,12 +123,37 @@ def get_dataset_t2(dataset_dir: str, batch_size: int = 16):
     return train_dataloader, val_dataloader, test_dataloader
 
 
+def get_dataset_t5(dataset_dir, batch_size = 16, shuffle = True):
+
+    transform = transforms.Compose([transforms.ToTensor(), transforms.CenterCrop(100)])
+    ds = ImageFolder(root=dataset_dir,transform=transform)
+
+    train_idx, test_idx = train_test_split(
+        np.arange(len(ds)), test_size=0.1, shuffle=shuffle, stratify=ds.targets
+    )
+    train_labels = ds.targets
+    train_labels = np.array(train_labels)
+    train_idx, val_idx = train_test_split(np.arange(len(train_idx)), test_size=0.05, shuffle=shuffle, stratify=train_labels[train_idx])
+
+    train_ds = Subset(ds, indices=train_idx)
+    val_ds = Subset(ds, indices=val_idx)
+    test_ds = Subset(ds, indices=test_idx)
+
+    # print(f"train_ds : {len(train_ds)}, val_ds: {len(val_ds)}, test_ds: {len(test_ds)}")
+    train_dataloader = DataLoader(train_ds, batch_size=batch_size, shuffle=shuffle)
+    val_dataloader = DataLoader(val_ds, batch_size=batch_size, shuffle=shuffle)
+    test_dataloader = DataLoader(test_ds, batch_size=batch_size, shuffle=shuffle)
+
+    return train_dataloader, val_dataloader, test_dataloader
+
+
+
 if __name__ == "__main__":
-    root_dir = "/media/saitomar/Work/Projects/DeepLense_Test/task_2_dataset"
+    root_dir = "/media/saitomar/Work/Projects/DeepLense_Test/task_5_dataset"
     # dataset = get_dataset_t1(root_dir=root_dir)
     # print(dataset.samples)
 
     # transform=None
-    train_dataloader, val_dataloader, test_dataloader = get_dataset_t2(
+    train_loader, val_loader,test_loader=get_dataset_t5(
         dataset_dir=root_dir
     )
